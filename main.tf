@@ -3,8 +3,8 @@ terraform {
 
   required_providers {
       google = {
-          version = ">= 3.61.0"
-          source  = "hashicorp/google"
+          version = "~> 3.64"
+          source  = "registry.terraform.io/hashicorp/google"
       }
   }
 
@@ -13,9 +13,13 @@ terraform {
       organization = "accentis"
 
       workspaces {
-          prefix = "project"
+          prefix = "accentis-gcp-project-"
       }
   }
+}
+
+provider "google" {
+    project = var.project_id
 }
 
 locals {
@@ -25,20 +29,19 @@ locals {
 }
 
 resource "google_project_service" "apis" {
-    for_each = local.services
+    for_each = toset(local.services)
 
     service = each.key
 }
 
-data "google_project" "main" {}
-
 resource "google_kms_key_ring" "keys" {
-    name = "${data.google_project.main.project_id}-keyring"
-    location = "us"
+    name = "${var.project_id}-keyring"
+    location = "global"
 }
 
 resource "google_kms_crypto_key" "disks" {
     name = "disk-encryption"
     key_ring = google_kms_key_ring.keys.id
     purpose = "ENCRYPT_DECRYPT"
+    rotation_period = "7776000s"
 }
