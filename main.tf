@@ -25,6 +25,7 @@ provider "google" {
 locals {
     services = [
         "cloudkms.googleapis.com",
+        "container.googleapis.com",
     ]
 }
 
