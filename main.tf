@@ -53,11 +53,70 @@ resource "google_service_account" "gke_cluster_module" {
 }
 
 resource "google_project_iam_custom_role" "gke_cluster_module" {
-    role_id = "gke_cluster_module"
-    title   = "gke-cluster-module"
-    stage   = "GA"
+  role_id = "gke_cluster_module"
+  title   = "gke-cluster-module"
+  stage   = "GA"
 
-    permissions = [ "compute.networks.create" ]
+  permissions = [
+    "compute.disks.create",
+
+    "compute.firewalls.create",
+    "compute.firewalls.delete",
+    "compute.firewalls.get",
+
+    "compute.healthChecks.create",
+    "compute.healthChecks.delete",
+    "compute.healthChecks.get",
+    "compute.healthChecks.use",
+
+    "compute.images.getFromFamily",
+
+    "compute.instanceGroupManagers.create",
+    "compute.instanceGroupManagers.delete",
+    "compute.instanceGroupManagers.get",
+    "compute.instanceGroupManagers.update",
+
+    "compute.instances.create",
+    "compute.instances.get",
+    "compute.instances.setMetadata",
+    "compute.instances.setTags",
+
+    "compute.instanceTemplates.create",
+    "compute.instanceTemplates.delete",
+    "compute.instanceTemplates.get",
+    "compute.instanceTemplates.useReadOnly",
+
+    "compute.networks.create",
+    "compute.networks.delete",
+    "compute.networks.get",
+    "compute.networks.updatePolicy",
+
+    "compute.projects.get",
+
+    "compute.routers.create",
+    "compute.routers.delete",
+    "compute.routers.get",
+    "compute.routers.update",
+
+    "compute.subnetworks.create",
+    "compute.subnetworks.delete",
+    "compute.subnetworks.get",
+    "compute.subnetworks.use",
+    "compute.subnetworks.useExternalIp",
+
+    "container.clusters.create",
+    "container.clusters.delete",
+    "container.clusters.get",
+    "container.clusters.update",
+
+    "container.nodes.list",
+
+    "container.operations.get",
+
+    "iam.serviceAccounts.create",
+    "iam.serviceAccounts.delete",
+    "iam.serviceAccounts.get",
+  ]
 }
 
 resource "google_project_iam_binding" "gke_cluster_module" {
@@ -65,5 +124,28 @@ resource "google_project_iam_binding" "gke_cluster_module" {
 
   members = [ 
     "serviceAccount:${google_service_account.gke_cluster_module.email}",
+  ]
+}
+
+resource "google_service_account_iam_binding" "default_compute_engine" {
+  service_account_id = "projects/accentis-288921/serviceAccounts/521113983161-compute@developer.gserviceaccount.com"
+  role               = "roles/iam.serviceAccountUser"
+
+  members = [
+    "serviceAccount:${google_service_account.gke_cluster_module.email}",
+  ]
+}
+
+resource "google_service_account" "common_gke_worker_node" {
+  account_id = "common-gke-worker-node"
+  display_name = "Common GKE Worker Node"
+}
+
+resource "google_service_account_iam_binding" "common_gke_worker_node" {
+  service_account_id = google_service_account.common_gke_worker_node.name
+  role               = "roles/iam.serviceAccountUser"
+
+  members = [
+    "serviceAccount:${google_service_account.gke_cluster_module.email}"
   ]
 }
