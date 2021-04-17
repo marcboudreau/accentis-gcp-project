@@ -46,3 +46,24 @@ resource "google_kms_crypto_key" "disks" {
     purpose = "ENCRYPT_DECRYPT"
     rotation_period = "7776000s"
 }
+
+resource "google_service_account" "gke_cluster_module" {
+    account_id   = "gke-cluster-module"
+    display_name = "gke-cluster-module"
+}
+
+resource "google_project_iam_custom_role" "gke_cluster_module" {
+    role_id = "gke_cluster_module"
+    title   = "gke-cluster-module"
+    stage   = "GA"
+
+    permissions = [ "compute.networks.create" ]
+}
+
+resource "google_project_iam_binding" "gke_cluster_module" {
+  role = google_project_iam_custom_role.gke_cluster_module.id
+
+  members = [ 
+    "serviceAccount:${google_service_account.gke_cluster_module.email}",
+  ]
+}
