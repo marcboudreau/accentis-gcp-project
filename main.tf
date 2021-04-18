@@ -1,3 +1,14 @@
+################################################################################
+#
+# accentis-gcp-project
+#   A Terraform project that configures a Google Cloud Platform Project in order
+#   to run Accentis deployments.
+#
+# main.tf
+#   Defines the Terraform settings and resources for the project.
+#
+################################################################################
+
 terraform {
   required_version = "~> 0.14"
 
@@ -128,7 +139,7 @@ resource "google_project_iam_binding" "gke_cluster_module" {
 }
 
 resource "google_service_account_iam_binding" "default_compute_engine" {
-  service_account_id = "projects/accentis-288921/serviceAccounts/521113983161-compute@developer.gserviceaccount.com"
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.default_compute_engine_service_account}"
   role               = "roles/iam.serviceAccountUser"
 
   members = [
