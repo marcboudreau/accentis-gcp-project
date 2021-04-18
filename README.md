@@ -20,7 +20,7 @@ This section describes the prerequisites needed to be able to run Terraform with
 
 ### Terraform Cloud Workspace
 
-1. Create a workspace in [Terraform Cloud](https://app.terraform.io/) named `accentis-gcp-project-` and the numerical suffix that follows `accentis-` in the GCP project ID.  For example, for GCP project `accentis-288921`, the workspace name is `accentis-gcp-project-288921`.
+1. Create a workspace in [Terraform Cloud](https://app.terraform.io/) named `accentis-gcp-project-` and the numerical suffix that follows `accentis-` in the GCP project ID.  For example, for GCP project `accentis-111222`, the workspace name is `accentis-gcp-project-111222`.
 1. In the created Terraform Cloud workspace, set a **Variable** named **project_id** and set its value to the GCP Project ID.
 
 ### GCP Service Account
